@@ -21,8 +21,11 @@ pipeline {
         stage('Déploiement vers Nexus') {
             steps {
                 echo 'Envoi du projet vers Nexus...'
-                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
-                    bat 'mvn deploy -DskipTests -Dnexus.username=%NEXUS_USER% -Dnexus.password=%NEXUS_PASSWORD%'
+                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'admin', passwordVariable: 'Azerty123@')]) {
+                    bat """
+                        echo <settings><servers><server><id>nexus-snapshots</id><username>%NEXUS_USER%USERNAME%</username><password>%NEXUS_PASSWORD%</password></server><server><id>nexus-releases</id><username>%NEXUS_USER%</username><password>%NEXUS_PASSWORD%</password></server></servers></settings> > settings.xml
+                        mvn deploy -DskipTests -s settings.xml
+                    """
                 }
             }
         }
