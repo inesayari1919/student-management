@@ -2,13 +2,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Build et Test') {
+        stage('CHECKOUT GIT') {
+            steps {
+                echo 'Récupération du code depuis Git...'
+                checkout scm
+            }
+        }
+        stage('MVN CLEAN') {
             steps {
                 echo 'Compilation et exécution des tests...'
                 bat '.\\mvnw clean test'
             }
         }
-        stage('SonarQube Analysis') {
+        stage('MVN SONARQUBE') {
             steps {
                 script {
                     def scannerHome = tool 'SonarQubeScanner'
@@ -18,7 +24,7 @@ pipeline {
                 }
             }
         }
-        stage('Déploiement vers Nexus') {
+        stage('PUBLISH TO NEXUS') {
             steps {
                 echo 'Envoi du projet vers Nexus...'
                 withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
@@ -37,7 +43,7 @@ pipeline {
                         echo     ^</server^> >> settings.xml
                         echo   ^</servers^> >> settings.xml
                         echo ^</settings^> >> settings.xml
-                        
+
                         mvn deploy -DskipTests -s settings.xml
                     '''
                 }
