@@ -49,5 +49,21 @@ pipeline {
                 }
             }
         }
+        stage('BUILDING OUR IMAGE') {
+            steps {
+                echo 'Construction de l image Docker...'
+                script {
+                    bat 'docker build -t noussa2026/devopsimage:latest .'
+                }
+            }
+        }
+        stage('DEPLOY OUR IMAGE') {
+            steps {
+                echo 'Deploiement de l image Docker...'
+                script {
+                    bat 'docker run -d -p 8085:8082 --name student-app noussa2026/devopsimage:latest'
+                }
+            }
+        }
     }
 }
