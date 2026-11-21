@@ -39,6 +39,16 @@ pipeline {
                 sh 'docker build -t noussa2026/devopsimage:latest .'
             }
         }
+        stage('PUSH TO DOCKERHUB') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push noussa2026/devopsimage:latest
+                    '''
+                }
+            }
+        }
         stage('Test AWS Credentials') {
             steps {
                 echo 'Vérification de la connexion AWS...'
@@ -94,6 +104,7 @@ pipeline {
                     sh '''
                         export AWS_DEFAULT_REGION=us-west-2
                         kubectl apply -f k8s/
+                        kubectl rollout restart deployment/student-deployment
                         kubectl get pods
                         kubectl get svc
                     '''
