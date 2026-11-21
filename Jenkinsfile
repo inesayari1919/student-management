@@ -24,11 +24,11 @@ pipeline {
                 sh 'mvn test -DskipTests'
             }
         }
-       stage('MVN SONARQUBE') {
-                steps {
-                    sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=admin -Dsonar.password=Azerty123@'
-                }
+        stage('MVN SONARQUBE') {
+            steps {
+                sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=admin -Dsonar.password=Azerty123@'
             }
+        }
         stage('PUBLISH TO NEXUS') {
             steps {
                 sh 'mvn deploy -DskipTests'
