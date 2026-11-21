@@ -26,12 +26,12 @@ pipeline {
         }
         stage('MVN SONARQUBE') {
             steps {
-                sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin || true'
+                sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=admin -Dsonar.password=Azerty123@'
             }
         }
         stage('PUBLISH TO NEXUS') {
             steps {
-                sh 'mvn deploy -DskipTests || echo "Nexus deploy checked"'
+                sh 'mvn deploy -DskipTests'
             }
         }
         stage('BUILDING OUR IMAGE') {
